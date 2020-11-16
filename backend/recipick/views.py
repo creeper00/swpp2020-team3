@@ -199,15 +199,13 @@ def recipe_post(request):
         recipe.save()
 
         # photo_list
-        cnt = 0;
+        cnt = 0
         for img_64 in p_list:
             format, imgstr = img_64.split(';base64,')
             ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-            new_img = ImageModel.objects.create(img=data, description_index=cnt)
-            recipe.photo_list.add(new_img)
+            new_img = ImageModel.objects.create(img=data, description_index=cnt, recipe=recipe)
             cnt = cnt + 1
-        recipe.save()
         return_id = {'id': recipe.id}
         return JsonResponse(return_id, status = 201)
     else:
@@ -241,6 +239,7 @@ def recipe(request, id):
         p_list = recipe.photo_list
         thumbnail = base64.b64encode(recipe.thumbnail.read()).decode('utf-8')
         new_list = []
+        print(p_list.all())
         for photo in p_list.all():
             encoded_string = base64.b64encode(photo.img.read())
             new_list.append(encoded_string.decode('utf-8'))

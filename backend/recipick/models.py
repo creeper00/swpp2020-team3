@@ -12,10 +12,6 @@ class Ingredient(models.Model):
     brand = models.CharField(max_length=64)
     picture = models.ImageField(null=True)
 
-class ImageModel(models.Model):
-    img = models.ImageField()
-    description_index =  models.IntegerField(default=0)
-
 class Recipe(models.Model):
     title = models.CharField(max_length=64)
     author = models.ForeignKey(
@@ -28,9 +24,9 @@ class Recipe(models.Model):
     thumbnail = models.ImageField(upload_to='blog/%Y/%m/%d', null=True, default='media/already.png')
     duration= models.IntegerField()
 
-    photo_list = models.ManyToManyField(
-        ImageModel,
-    )
+    #photo_list = models.ManyToManyField(
+    #    ImageModel,
+    #)
     description_list = models.JSONField(null=True)
     tag_list = models.JSONField(null=True)
     ingredient_list = models.ManyToManyField(
@@ -42,6 +38,17 @@ class Recipe(models.Model):
     created_date = models.DateField(null=True)
     edited = models.BooleanField(null=True)
     summary = models.TextField(null=True)
+
+class ImageModel(models.Model):
+    img = models.ImageField()
+    description_index =  models.IntegerField(default=0)
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete = models.CASCADE,
+        related_name = 'photo_list',
+        null = True,
+    )
+
 class Comment(models.Model):
     recipe = models.ForeignKey(
         Recipe,
